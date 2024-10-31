@@ -8,11 +8,9 @@ from routers import routers
 from config import TG_TOKEN
 
 
-
 '''Инициализация бота и диспетчера'''
 bot = Bot(token=TG_TOKEN)
 dp = Dispatcher()
-
 
 
 async def main() -> None:
