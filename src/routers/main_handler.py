@@ -70,5 +70,3 @@ async def guid_answer(message: Message):
         'Пошаговые инструкции по сборке снасти.',
         reply_markup=inline_keyboards.back_in_menu_kb
     )
-
-
