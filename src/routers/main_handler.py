@@ -1,3 +1,5 @@
+from typing import Optional
+
 from aiogram import Router, F
 from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
@@ -20,13 +22,28 @@ async def process_start_command(message: Message):
     )
 
 
+@router.message(F.text.lower() == 'назад в меню')
+async def back_in_menu(message: Message, state: Optional[FSMContext]=None):
+    """ Back in main menu """
+
+    await message.answer(
+        "Вы вернулись в главное меню!",
+        reply_markup=reply_keyboards.main_kb
+    )
+
+    if state:
+        await state.clear()
+
+
+
 @router.message(F.text == '🌅 Прогноз клёва')
 async def bite_forecast_answer(message: Message):
     await message.answer(
         text='Астрологические и метеорологические рекомендации '
              'по лучшим дням и часам для ловли рыбы.\n\n'
-             'Прогнозы на основе фаз луны и погодных изменений.',
-        reply_markup=inline_keyboards.back_in_menu_kb
+             'Прогнозы на основе фаз луны и погодных изменений.\n\n'
+             'Выберите дату',
+        reply_markup=reply_keyboards.forecast_kb
     )
 
 
@@ -49,7 +66,7 @@ async def guide_answer(message: Message):
 
 
 
-@router.message(F.text == 'Техники ловли')
+@router.message(F.text == 'Техника ловли')
 async def guid_answer(message: Message):
     await message.answer(
         text='Указания по различным методам ловли '
@@ -57,7 +74,7 @@ async def guid_answer(message: Message):
         'с описанием особенностей и секретов.\n\n'
         'Советы по ловле определённых видов рыбы '
         '(щука, карп, лещ и др.).',
-        reply_markup=inline_keyboards.back_in_menu_kb
+        reply_markup=inline_keyboards.back_in_guide_kb
     )
 
 
@@ -68,5 +85,23 @@ async def guid_answer(message: Message):
         'катушек, лесок и приманок для различных '
         'видов рыбы и условий ловли.\n\n'
         'Пошаговые инструкции по сборке снасти.',
-        reply_markup=inline_keyboards.back_in_menu_kb
+        reply_markup=inline_keyboards.back_in_guide_kb
     )
+
+
+""" Handlers of the bite forecast """
+
+@router.message(F.text == 'Сегодня')
+async def today_answer(message: Message):
+    pass
+
+
+@router.message(F.text == 'Завтра')
+async def tomorrow_answer(message: Message):
+    pass
+
+
+@router.message(F.text == 'На 5 дней')
+async def on_five_day_answer(message: Message):
+    pass
+

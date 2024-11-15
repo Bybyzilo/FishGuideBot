@@ -26,3 +26,22 @@ async def back_in_main_menu(callback: CallbackQuery, state: Optional[FSMContext]
 
     if state:
         await state.clear()
+
+
+@router.callback_query(F.data == 'back')
+async def back_in_guide(callback: CallbackQuery, state: Optional[FSMContext]=None):
+
+    await callback.answer()
+
+    await callback.message.bot.delete_message(
+        chat_id=callback.message.chat.id,
+        message_id=callback.message.message_id
+    )
+
+    await callback.message.answer(
+        'Вы вернулись в меню!',
+        reply_markup=reply_keyboards.guide_kb
+    )
+
+    if state:
+        await state.clear()

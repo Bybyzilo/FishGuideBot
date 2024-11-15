@@ -11,3 +11,13 @@ back_in_menu_kb = InlineKeyboardMarkup(
 		]
 	]
 )
+
+
+back_in_guide_kb = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+			InlineKeyboardButton(text='Назад', callback_data='back')
+		]
+	]
+)
+
