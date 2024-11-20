@@ -6,6 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
 
 from keyboards import reply_keyboards, inline_keyboards
+from utils import fishing_forecast
 
 router = Router()
 
@@ -38,6 +39,15 @@ async def back_in_menu(message: Message, state: Optional[FSMContext]=None):
 
 @router.message(F.text == '🌅 Прогноз клёва')
 async def bite_forecast_answer(message: Message):
+    # Получение данныъ парсера в json (Python dict, словари) формате
+    data: dict = await fishing_forecast()
+
+    # Потом удалить эти два сообщения
+    await message.answer(str(data))
+    await message.answer("Данные представлены в боте в виду JSON объекта, находятся в переменной data в 43 сроке файла main_handler.py\nПолучить данные: await finishing_forecast(), если что потом удали это соощение и сообщение сверху в коде\nНе забудь удалить return снизу")
+
+
+    return 
     await message.answer(
         text='Астрологические и метеорологические рекомендации '
              'по лучшим дням и часам для ловли рыбы.\n\n'
