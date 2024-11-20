@@ -104,4 +104,3 @@ async def tomorrow_answer(message: Message):
 @router.message(F.text == 'На 5 дней')
 async def on_five_day_answer(message: Message):
     pass
-

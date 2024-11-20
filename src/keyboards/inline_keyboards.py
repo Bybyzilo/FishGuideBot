@@ -20,4 +20,3 @@ back_in_guide_kb = InlineKeyboardMarkup(
 		]
 	]
 )
-
