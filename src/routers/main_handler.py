@@ -8,6 +8,7 @@ from aiogram.types import Message, ReplyKeyboardRemove, InlineKeyboardButton, In
 from keyboards import reply_keyboards, inline_keyboards
 from utils import fishing_forecast
 
+
 router = Router()
 
 
@@ -39,22 +40,18 @@ async def back_in_menu(message: Message, state: Optional[FSMContext]=None):
 
 @router.message(F.text == '🌅 Прогноз клёва')
 async def bite_forecast_answer(message: Message):
-    # Получение данныъ парсера в json (Python dict, словари) формате
     data: dict = await fishing_forecast()
+
+    await message.answer(
+            text='Выберите дату прогноза',
+            reply_markup=reply_keyboards.forecast_kb
+        )
+
+    # Получение данныъ парсера в json (Python dict, словари) формате
 
     # Потом удалить эти два сообщения
     await message.answer(str(data))
     await message.answer("Данные представлены в боте в виду JSON объекта, находятся в переменной data в 43 сроке файла main_handler.py\nПолучить данные: await finishing_forecast(), если что потом удали это соощение и сообщение сверху в коде\nНе забудь удалить return снизу")
-
-
-    return 
-    await message.answer(
-        text='Астрологические и метеорологические рекомендации '
-             'по лучшим дням и часам для ловли рыбы.\n\n'
-             'Прогнозы на основе фаз луны и погодных изменений.\n\n'
-             'Выберите дату',
-        reply_markup=reply_keyboards.forecast_kb
-    )
 
 
 @router.message(F.text == '🏝️ Места ловли')
@@ -103,7 +100,40 @@ async def guid_answer(message: Message):
 
 @router.message(F.text == 'Сегодня')
 async def today_answer(message: Message):
-    pass
+
+    data: dict = await fishing_forecast()
+    days = list(data.keys())
+    day_now = data[days[0]]
+
+    await message.answer('Пока что представлен демо вариант с одной рекой - Темерник')
+    await message.answer(
+        text='Пока что представлен демо вариант с одной рекой - Темерник'
+             f'      Сегодня      \n'
+             f'     {day_now['date']}      \n\n'
+
+             f'Время | температура воздуха      \n'
+             f'Ночь 02:00  | {day_now['air_temp'][0]} °C \n'
+             f'Утро 08:00  | {day_now['air_temp'][1]} °C \n'
+             f'День 14:00  | {day_now['air_temp'][2]} °C \n'
+             f'Вечер 20:00 | {day_now['air_temp'][3]} °C\n\n'
+
+             f'Температура воды\n'
+             f'поверхность/глубина\n'
+             f'{day_now['water_temp'][0]} °C / {day_now['water_temp'][1]} °C\n\n'
+
+             f'Время | облачность\n'
+             f'Ночь 02:00  | {day_now['cloudiness'][0]} % \n'
+             f'Утро 08:00  | {day_now['cloudiness'][1]} % \n'
+             f'День 14:00  | {day_now['cloudiness'][2]} % \n'
+             f'Вечер 20:00 | {day_now['cloudiness'][3]} %\n\n'
+
+             f'Время | давление\n'
+             f'Ночь 02:00  | {day_now['pressure'][0]} мм. рт. ст. \n'
+             f'Утро 08:00  | {day_now['pressure'][1]} мм. рт. ст. \n'
+             f'День 14:00  | {day_now['pressure'][2]} мм. рт. ст. \n'
+             f'Вечер 20:00 | {day_now['pressure'][3]} мм. рт. ст.\n\n'
+
+        )
 
 
 @router.message(F.text == 'Завтра')

@@ -6,7 +6,7 @@ import aiohttp
 
 
 async def fishing_forecast():
-    """ Получение прогноза клева с сайта 
+    """ Получение прогноза клева с сайта
     Не пытайся понять, что за пи**ец тут написано, я его сделал используя костыыли
     """
 
@@ -30,8 +30,8 @@ async def fishing_forecast():
         data[i['datetime']] = {
             'date': i.next.strip(),
             'air_temp': [],
-            'water_temp': [], 
-            'cloudiness': [], 
+            'water_temp': [],
+            'cloudiness': [],
             'pressure': [],
             'humidity': []
         }
@@ -41,9 +41,9 @@ async def fishing_forecast():
     o = -1
     for i in air_temp:
         temp_el = i.find_all(class_="temperature")
-        if temp_el: 
+        if temp_el:
             o += 1
-        
+
         for j in temp_el:
             date = list(data.keys())[o]
             data[date]['air_temp'].append(j.find(class_='cel').text.strip())
@@ -66,9 +66,9 @@ async def fishing_forecast():
 
         for kj, j in enumerate(i.find_all('div')):
             if kj % 2 == 0:
-                data[date]['cloudiness'].append(j.text.strip())
-        
-        
+                data[date]['cloudiness'].append(int(j.text.strip().replace('\n', '')))
+
+
 
     pressure = subcol[25:30]
     for k, i in enumerate(pressure):
