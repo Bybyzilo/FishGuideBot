@@ -1,6 +1,6 @@
 # Парсер прогноза клёва рыбалки
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, element
 
 import aiohttp
 
@@ -43,25 +43,26 @@ async def fishing_forecast():
         data[date]['day'] = day
 
 
+        detailed_forecast: element.Tag = element.find(class_='detailed-forecast')
+
         # Достаёт температуру и суёт в словарь
-        air_temp = element.find(class_='detailed-forecast').find_all('i')[4].text
+        air_temp = detailed_forecast.find_all('i')[4].text
         temp = ' '.join(air_temp.split())
         data[date]['air_temp'] = temp
 
 
         # Достаёт давление и суёт в словарь
-        pressure = element.find(class_='detailed-forecast').find('i').text
+        pressure = detailed_forecast.find('i').text
         data[date]['pressure'] = pressure
 
 
         # Достаёт ветер и суёт в словарь
-        wind = element.find(class_='detailed-forecast').find_all('i')[1].text
+        wind = detailed_forecast.find_all('i')[1].text
         data[date]['wind'] = wind
 
 
-        # Достаёт фазу луны и суёт в словарь но почему то не переводится в текст
-        moon_phase = element.find(class_='detailed-forecast').find_all('i')[11]
-        moon_phase = str(moon_phase).replace('<i>', '').replace('</i>', '')
+        # Достаёт фазу луны и суёт в словарь
+        moon_phase = detailed_forecast.find_all('i')[11].text
         data[date]['moon_phase'] = moon_phase
 
         # Достаёт сам прогноз
@@ -69,3 +70,9 @@ async def fishing_forecast():
         data[date]['discription'] = discription
 
     return data
+
+
+if __name__ == "__main__":
+    import asyncio
+
+    asyncio.get_event_loop().run_until_complete(fishing_forecast())
