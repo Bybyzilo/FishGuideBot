@@ -25,7 +25,7 @@ guide_kb = ReplyKeyboardMarkup(
             KeyboardButton(text='Не придумали еще')
         ],
         [
-            KeyboardButton(text='Назад в меню')
+            KeyboardButton(text='⬅ Назад в меню')
         ]
     ],
     resize_keyboard=True,
@@ -37,12 +37,12 @@ guide_kb = ReplyKeyboardMarkup(
 forecast_kb = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text='Сегодня'),
-            KeyboardButton(text='Завтра'),
-            KeyboardButton(text='На 5 дней')
+            KeyboardButton(text='📅 Завтра'),
+            KeyboardButton(text='📆 Послезавтра'),
+            KeyboardButton(text='🗓 На неделю')
         ],
         [
-            KeyboardButton(text='Назад в меню')
+            KeyboardButton(text='⬅ Назад в меню')
         ]
     ],
     resize_keyboard=True,

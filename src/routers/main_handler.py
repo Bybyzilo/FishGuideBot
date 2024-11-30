@@ -7,7 +7,7 @@ from aiogram.types import Message, ReplyKeyboardRemove, InlineKeyboardButton, In
 
 from keyboards import reply_keyboards, inline_keyboards
 from parser import fishing_forecast
-
+from config import moon_image
 
 router = Router()
 
@@ -24,7 +24,7 @@ async def process_start_command(message: Message):
     )
 
 
-@router.message(F.text.lower() == 'назад в меню')
+@router.message(F.text.lower() == '⬅ назад в меню')
 async def back_in_menu(message: Message, state: Optional[FSMContext]=None):
     """ Back in main menu """
 
@@ -40,9 +40,6 @@ async def back_in_menu(message: Message, state: Optional[FSMContext]=None):
 
 @router.message(F.text == '🌅 Прогноз клёва')
 async def bite_forecast_answer(message: Message):
-    data: dict = await fishing_forecast()
-
-    await message.answer(str(data))
 
     await message.answer(
             text='Выберите дату прогноза',
@@ -94,49 +91,144 @@ async def guid_answer(message: Message):
 
 """ Handlers of the bite forecast """
 
-# @router.message(F.text == 'Сегодня')
-# async def today_answer(message: Message):
+@router.message(F.text == '📅 Завтра')
+async def today_answer(message: Message):
 
-    # data: dict = await fishing_forecast()
-    # days = list(data.keys())
-    # day_now = data[days[0]]
+    data: dict = await fishing_forecast()
 
-    # # await message.answer('Пока что представлен демо вариант с одной рекой - Темерник')
-    # await message.answer(
-    #     text='Пока что представлен демо вариант с одной рекой - Темерник'
-    #          f'      Сегодня      \n'
-    #          f'     {day_now['date']}      \n\n'
-
-    #          f'Время | температура воздуха      \n'
-    #          f'Ночь 02:00  | {day_now['air_temp'][0]} °C \n'
-    #          f'Утро 08:00  | {day_now['air_temp'][1]} °C \n'
-    #          f'День 14:00  | {day_now['air_temp'][2]} °C \n'
-    #          f'Вечер 20:00 | {day_now['air_temp'][3]} °C\n\n'
-
-    #          f'Температура воды\n'
-    #          f'поверхность/глубина\n'
-    #          f'{day_now['water_temp'][0]} °C / {day_now['water_temp'][1]} °C\n\n'
-
-    #          f'Время | облачность\n'
-    #          f'Ночь 02:00  | {day_now['cloudiness'][0]} % \n'
-    #          f'Утро 08:00  | {day_now['cloudiness'][1]} % \n'
-    #          f'День 14:00  | {day_now['cloudiness'][2]} % \n'
-    #          f'Вечер 20:00 | {day_now['cloudiness'][3]} %\n\n'
-
-    #          f'Время | давление\n'
-    #          f'Ночь 02:00  | {day_now['pressure'][0]} мм. рт. ст. \n'
-    #          f'Утро 08:00  | {day_now['pressure'][1]} мм. рт. ст. \n'
-    #          f'День 14:00  | {day_now['pressure'][2]} мм. рт. ст. \n'
-    #          f'Вечер 20:00 | {day_now['pressure'][3]} мм. рт. ст.\n\n'
-
-    #     )
+    day_now = list(data.keys())[0]
 
 
-@router.message(F.text == 'Завтра')
+    await message.answer(
+        text='~~~~~~~~~~~~\n'
+            f'<b>{data[day_now]['day']} {day_now}:</b>\n\n'
+             '<u><i>Влияющие факторы:</i></u>\n'
+            f'Температура воздуха: <b>{data[day_now]['air_temp']}</b>\n'
+            f'Давление: <b>{data[day_now]['pressure']}</b>\n'
+            f'Ветер: <b>{data[day_now]['wind']} 💨</b>\n'
+            f'Фаза луны: <b>{data[day_now]['moon_phase']}</b> {moon_image[data[day_now]['moon_phase']]}\n\n'
+            f'{data[day_now]['discription']}\n'
+            f'~~~~~~~~~~~~',
+            parse_mode='html'
+        )
+
+
+@router.message(F.text == '📆 Послезавтра')
 async def tomorrow_answer(message: Message):
-    pass
+
+    data: dict = await fishing_forecast()
+
+    day_now = list(data.keys())[1]
 
 
-@router.message(F.text == 'На 5 дней')
+    await message.answer(
+        text='~~~~~~~~~~~~\n'
+            f'<b>{data[day_now]['day']} {day_now}:</b>\n\n'
+             '<u><i>Влияющие факторы:</i></u>\n'
+            f'Температура воздуха: <b>{data[day_now]['air_temp']}</b>\n'
+            f'Давление: <b>{data[day_now]['pressure']}</b>\n'
+            f'Ветер: <b>{data[day_now]['wind']} 💨</b>\n'
+            f'Фаза луны: <b>{data[day_now]['moon_phase']}</b> {moon_image[data[day_now]['moon_phase']]}\n\n'
+            f'{data[day_now]['discription']}\n'
+            f'~~~~~~~~~~~~',
+            parse_mode='html'
+        )
+
+
+@router.message(F.text == '🗓 На неделю')
 async def on_five_day_answer(message: Message):
-    pass
+
+    data: dict = await fishing_forecast()
+
+    day_now = list(data.keys())
+
+
+    await message.answer(
+        text='Прогноз клёва рыбы на 7 дней для <b>Ростов-на-Дону:</b>\n\n'
+
+             '~~~~~~~~~~~~\n'
+            f'<b>{data[day_now[0]]['day']} {day_now[0]}:</b>\n\n'
+
+             '<u><i>Влияющие факторы:</i></u>\n'
+            f'Температура воздуха: <b>{data[day_now[0]]['air_temp']}</b>\n'
+            f'Давление: <b>{data[day_now[0]]['pressure']}</b>\n'
+            f'Ветер: <b>{data[day_now[0]]['wind']}</b> 💨\n'
+            f'Фаза луны: <b>{data[day_now[0]]['moon_phase']}</b> {moon_image[data[day_now[0]]['moon_phase']]}\n\n'
+
+            f'<i>{data[day_now[0]]['discription']}</i>\n\n'
+
+            f'———————\n\n'
+
+            f'<b>{data[day_now[1]]['day']} {day_now[1]}:</b>\n\n'
+
+             '<u><i>Влияющие факторы:</i></u>\n'
+            f'Температура воздуха: <b>{data[day_now[1]]['air_temp']}</b>\n'
+            f'Давление: <b>{data[day_now[1]]['pressure']}</b>\n'
+            f'Ветер: <b>{data[day_now[1]]['wind']}</b> 💨\n'
+            f'Фаза луны: <b>{data[day_now[1]]['moon_phase']}</b> {moon_image[data[day_now[1]]['moon_phase']]}\n\n'
+
+            f'<i>{data[day_now[1]]['discription']}</i>\n\n'
+
+            f'———————\n\n'
+
+            f'<b>{data[day_now[2]]['day']} {day_now[2]}:</b>\n\n'
+
+             '<u><i>Влияющие факторы:</i></u>\n'
+            f'Температура воздуха: <b>{data[day_now[2]]['air_temp']}</b>\n'
+            f'Давление: <b>{data[day_now[2]]['pressure']}</b>\n'
+            f'Ветер: <b>{data[day_now[2]]['wind']}</b> 💨\n'
+            f'Фаза луны: <b>{data[day_now[2]]['moon_phase']}</b> {moon_image[data[day_now[2]]['moon_phase']]}\n\n'
+
+            f'<i>{data[day_now[2]]['discription']}</i>\n\n'
+
+            f'———————\n\n'
+
+            f'<b>{data[day_now[3]]['day']} {day_now[3]}:</b>\n\n'
+
+             '<u><i>Влияющие факторы:</i></u>\n'
+            f'Температура воздуха: <b>{data[day_now[3]]['air_temp']}</b>\n'
+            f'Давление: <b>{data[day_now[3]]['pressure']}</b>\n'
+            f'Ветер: <b>{data[day_now[3]]['wind']}</b> 💨\n'
+            f'Фаза луны: <b>{data[day_now[3]]['moon_phase']}</b> {moon_image[data[day_now[3]]['moon_phase']]}\n\n'
+
+            f'<i>{data[day_now[3]]['discription']}</i>\n\n'
+
+            f'———————\n\n'
+
+            f'<b>{data[day_now[4]]['day']} {day_now[4]}:</b>\n\n'
+
+             '<u><i>Влияющие факторы:</i></u>\n'
+            f'Температура воздуха: <b>{data[day_now[4]]['air_temp']}</b>\n'
+            f'Давление: <b>{data[day_now[4]]['pressure']}</b>\n'
+            f'Ветер: <b>{data[day_now[4]]['wind']}</b> 💨\n'
+            f'Фаза луны: <b>{data[day_now[4]]['moon_phase']}</b> {moon_image[data[day_now[4]]['moon_phase']]}\n\n'
+
+            f'<i>{data[day_now[4]]['discription']}</i>\n\n'
+
+            f'———————\n\n'
+
+            f'<b>{data[day_now[5]]['day']} {day_now[5]}:</b>\n\n'
+
+             '<u><i>Влияющие факторы:</i></u>\n'
+            f'Температура воздуха: <b>{data[day_now[5]]['air_temp']}</b>\n'
+            f'Давление: <b>{data[day_now[5]]['pressure']}</b>\n'
+            f'Ветер: <b>{data[day_now[5]]['wind']}</b> 💨\n'
+            f'Фаза луны: <b>{data[day_now[5]]['moon_phase']}</b> {moon_image[data[day_now[5]]['moon_phase']]}\n\n'
+
+            f'<i>{data[day_now[5]]['discription']}</i>\n\n'
+
+            f'———————\n\n'
+
+            f'<b>{data[day_now[6]]['day']} {day_now[6]}:</b>\n\n'
+
+             '<u><i>Влияющие факторы:</i></u>\n'
+            f'Температура воздуха: <b>{data[day_now[6]]['air_temp']}</b>\n'
+            f'Давление: <b>{data[day_now[6]]['pressure']}</b>\n'
+            f'Ветер: <b>{data[day_now[6]]['wind']}</b> 💨\n'
+            f'Фаза луны: <b>{data[day_now[6]]['moon_phase']}</b> {moon_image[data[day_now[3]]['moon_phase']]}\n\n'
+
+            f'<i>{data[day_now[6]]['discription']}</i>\n'
+             '~~~~~~~~~~~~'
+            ,
+            parse_mode='html'
+        )

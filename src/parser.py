@@ -11,6 +11,7 @@ async def fishing_forecast():
     url = 'https://russian.fishing/forecast/rybalka-rostov-na-donu-758/'
 
     data = {}
+    
 
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 YaBrowser/24.10.0.0 Safari/537.36'
@@ -33,32 +34,38 @@ async def fishing_forecast():
 		    'air_temp': None,
 		    'pressure': None,
 		    'wind': None,
-		    'moon_phase': None
+		    'moon_phase': None,
+            'discription': None
 	    }
 
-        # Достаёт день недели у суёт в словарь
+        # Достаёт день недели и суёт в словарь
         day = element.find(class_="forecast-date").find('span').text
         data[date]['day'] = day
 
 
-        # Достаёт температуру у суёт в словарь
+        # Достаёт температуру и суёт в словарь
         air_temp = element.find(class_='detailed-forecast').find_all('i')[4].text
         temp = ' '.join(air_temp.split())
         data[date]['air_temp'] = temp
 
 
-        # Достаёт давление у суёт в словарь
+        # Достаёт давление и суёт в словарь
         pressure = element.find(class_='detailed-forecast').find('i').text
         data[date]['pressure'] = pressure
 
 
-        # Достаёт ветер у суёт в словарь
+        # Достаёт ветер и суёт в словарь
         wind = element.find(class_='detailed-forecast').find_all('i')[1].text
         data[date]['wind'] = wind
 
 
-        # Достаёт фазу луны у суёт в словарь но почему то не переводится в текст
+        # Достаёт фазу луны и суёт в словарь но почему то не переводится в текст
         moon_phase = element.find(class_='detailed-forecast').find_all('i')[11]
+        moon_phase = str(moon_phase).replace('<i>', '').replace('</i>', '')
         data[date]['moon_phase'] = moon_phase
+
+        # Достаёт сам прогноз
+        discription = element.find(class_='forecasting-description').find('span').text
+        data[date]['discription'] = discription
 
     return data
