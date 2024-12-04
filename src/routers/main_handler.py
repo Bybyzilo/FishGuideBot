@@ -125,44 +125,26 @@ async def guid_answer(message: Message):
 """ Handlers of the bite forecast """
 
 @router.message(F.text == '📅 Завтра')
-async def today_answer(message: Message):
-
-    data: dict = await fishing_forecast()
-
-    day_now = list(data.keys())[0]
-
-
-    await message.answer(
-        text='~~~~~~~~~~~~\n'
-            f'<b>{data[day_now]['day']} {day_now}:</b>\n\n'
-             '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now]['air_temp']}</b> 🌡️\n'
-            f'Давление: <b>{data[day_now]['pressure']}</b>\n'
-            f'Ветер: <b>{data[day_now]['wind']} 💨</b>\n'
-            f'Фаза луны: <b>{data[day_now]['moon_phase']}</b> {moon_image[data[day_now]['moon_phase']]}\n\n'
-            f'{data[day_now]['discription']}\n'
-            f'~~~~~~~~~~~~',
-            parse_mode='html'
-        )
-
-
 @router.message(F.text == '📆 Послезавтра')
 async def tomorrow_answer(message: Message):
 
     data: dict = await fishing_forecast()
 
-    day_now = list(data.keys())[1]
+    if 'послезавтра' in message.text.lower():
+        day_now = list(data.keys())[1]
+    else:
+        day_now = list(data.keys())[0]
 
 
     await message.answer(
         text='~~~~~~~~~~~~\n'
-            f'<b>{data[day_now]['day']} {day_now}:</b>\n\n'
-             '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now]['air_temp']}</b> 🌡️\n'
-            f'Давление: <b>{data[day_now]['pressure']}</b>\n'
-            f'Ветер: <b>{data[day_now]['wind']} 💨</b>\n'
-            f'Фаза луны: <b>{data[day_now]['moon_phase']}</b> {moon_image[data[day_now]['moon_phase']]}\n\n'
-            f'{data[day_now]['discription']}\n'
+            f"<b>{data[day_now]['day']} {day_now}:</b>\n\n"
+            "<u><i>Влияющие факторы:</i></u>\n"
+            f"Температура воздуха: <b>{data[day_now]['air_temp']}</b> 🌡️\n"
+            f"Давление: <b>{data[day_now]['pressure']}</b>\n"
+            f"Ветер: <b>{data[day_now]['wind']} 💨</b>\n"
+            f"Фаза луны: <b>{data[day_now]['moon_phase']}</b> {moon_image[data[day_now]['moon_phase']]}\n\n"
+            f"{data[day_now]['discription']}\n"
             f'~~~~~~~~~~~~',
             parse_mode='html'
         )
@@ -174,94 +156,24 @@ async def on_five_day_answer(message: Message):
     data: dict = await fishing_forecast()
 
     day_now = list(data.keys())
-
-
-    await message.answer(
-        text='Прогноз клёва рыбы на 7 дней для <b>Ростов-на-Дону:</b>\n\n'
-
-             '~~~~~~~~~~~~\n'
-            f'<b>{data[day_now[0]]['day']} {day_now[0]}:</b>\n\n'
-
-             '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now[0]]['air_temp']}</b> 🌡️\n'
-            f'Давление: <b>{data[day_now[0]]['pressure']}</b>\n'
-            f'Ветер: <b>{data[day_now[0]]['wind']}</b> 💨\n'
-            f'Фаза луны: <b>{data[day_now[0]]['moon_phase']}</b> {moon_image[data[day_now[0]]['moon_phase']]}\n\n'
-
-            f'<i>{data[day_now[0]]['discription']}</i>\n\n'
-
-            f'———————\n\n'
-
-            f'<b>{data[day_now[1]]['day']} {day_now[1]}:</b>\n\n'
-
-             '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now[1]]['air_temp']}</b> 🌡️\n'
-            f'Давление: <b>{data[day_now[1]]['pressure']}</b>\n'
-            f'Ветер: <b>{data[day_now[1]]['wind']}</b> 💨\n'
-            f'Фаза луны: <b>{data[day_now[1]]['moon_phase']}</b> {moon_image[data[day_now[1]]['moon_phase']]}\n\n'
-
-            f'<i>{data[day_now[1]]['discription']}</i>\n\n'
-
-            f'———————\n\n'
-
-            f'<b>{data[day_now[2]]['day']} {day_now[2]}:</b>\n\n'
-
-             '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now[2]]['air_temp']}</b> 🌡️\n'
-            f'Давление: <b>{data[day_now[2]]['pressure']}</b>\n'
-            f'Ветер: <b>{data[day_now[2]]['wind']}</b> 💨\n'
-            f'Фаза луны: <b>{data[day_now[2]]['moon_phase']}</b> {moon_image[data[day_now[2]]['moon_phase']]}\n\n'
-
-            f'<i>{data[day_now[2]]['discription']}</i>\n\n'
-
-            f'———————\n\n'
-
-            f'<b>{data[day_now[3]]['day']} {day_now[3]}:</b>\n\n'
-
-             '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now[3]]['air_temp']}</b> 🌡️\n'
-            f'Давление: <b>{data[day_now[3]]['pressure']}</b>\n'
-            f'Ветер: <b>{data[day_now[3]]['wind']}</b> 💨\n'
-            f'Фаза луны: <b>{data[day_now[3]]['moon_phase']}</b> {moon_image[data[day_now[3]]['moon_phase']]}\n\n'
-
-            f'<i>{data[day_now[3]]['discription']}</i>\n\n'
-
-            f'———————\n\n'
-
-            f'<b>{data[day_now[4]]['day']} {day_now[4]}:</b>\n\n'
-
-             '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now[4]]['air_temp']}</b> 🌡️\n'
-            f'Давление: <b>{data[day_now[4]]['pressure']}</b>\n'
-            f'Ветер: <b>{data[day_now[4]]['wind']}</b> 💨\n'
-            f'Фаза луны: <b>{data[day_now[4]]['moon_phase']}</b> {moon_image[data[day_now[4]]['moon_phase']]}\n\n'
-
-            f'<i>{data[day_now[4]]['discription']}</i>\n\n'
-
-            f'———————\n\n'
-
-            f'<b>{data[day_now[5]]['day']} {day_now[5]}:</b>\n\n'
-
-             '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now[5]]['air_temp']}</b> 🌡️\n'
-            f'Давление: <b>{data[day_now[5]]['pressure']}</b>\n'
-            f'Ветер: <b>{data[day_now[5]]['wind']}</b> 💨\n'
-            f'Фаза луны: <b>{data[day_now[5]]['moon_phase']}</b> {moon_image[data[day_now[5]]['moon_phase']]}\n\n'
-
-            f'<i>{data[day_now[5]]['discription']}</i>\n\n'
-
-            f'———————\n\n'
-
-            f'<b>{data[day_now[6]]['day']} {day_now[6]}:</b>\n\n'
-
-             '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now[6]]['air_temp']}</b> 🌡️\n'
-            f'Давление: <b>{data[day_now[6]]['pressure']}</b>\n'
-            f'Ветер: <b>{data[day_now[6]]['wind']}</b> 💨\n'
-            f'Фаза луны: <b>{data[day_now[6]]['moon_phase']}</b> {moon_image[data[day_now[3]]['moon_phase']]}\n\n'
-
-            f'<i>{data[day_now[6]]['discription']}</i>\n'
-             '~~~~~~~~~~~~'
-            ,
-            parse_mode='html'
+    
+    text = 'Прогноз клёва рыбы на 7 дней для <b>Ростов-на-Дону:</b>\n\n~~~~~~~~~~~~\n'
+    
+    for i in range(7):
+        text += (
+            f"<b>{data[day_now[i]]['day']} {day_now[i]}:</b>\n"
+            
+            "<u><i>Влияющие факторы:</i></u>\n"
+            f"Температура воздуха: <b>{data[day_now[i]]['air_temp']}</b> 🌡️\n"
+            f"Давление: <b>{data[day_now[i]]['pressure']}</b>\n"
+            f"Ветер: <b>{data[day_now[i]]['wind']} 💨</b>\n"
+            f"Фаза луны: <b>{data[day_now[i]]['moon_phase']}</b> {moon_image[data[day_now[i]]['moon_phase']]}\n\n"
+            f"{data[day_now[i]]['discription']}\n\n"
+            
+            f'<i>{data[day_now[i]]["discription"]}</i>\n\n'
+           '———————\n\n'
         )
+    
+    await message.answer(text, parse_mode='html')
+        
+        
