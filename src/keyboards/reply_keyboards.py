@@ -8,6 +8,9 @@ main_kb = ReplyKeyboardMarkup(
             KeyboardButton(text='🌅 Прогноз клёва'),
             KeyboardButton(text='🏝️ Места ловли'),
             KeyboardButton(text='🎣 Советы по рыбалке')
+        ],
+        [
+            KeyboardButton(text='Спросить у нейросети')
         ]
     ],
     resize_keyboard=True,

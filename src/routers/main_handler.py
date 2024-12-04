@@ -1,16 +1,30 @@
 from typing import Optional
 
 from aiogram import Router, F
-from aiogram.filters import Command, CommandStart
+from aiogram.filters import Command, CommandStart, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.fsm.state import StatesGroup, State
 
 from keyboards import reply_keyboards, inline_keyboards
 from parser import fishing_forecast
 from config import moon_image
+from generators import generate_response
+
 
 router = Router()
 
+
+class GetAiMessage(StatesGroup):
+    send_message = State()
+
+
+# @router.message(F.text == 'Спросить у нейросети')
+# async def ai(message: Message, state: FSMContext):
+
+#     res = await generate_response(message.text)
+#     print(res)
+#     await message.answer(res.choices[0].message.content)
 
 
 @router.message(CommandStart())
@@ -22,6 +36,26 @@ async def process_start_command(message: Message):
              'Удачной рыбалки! 🐟',
         reply_markup=reply_keyboards.main_kb
     )
+
+
+@router.message(StateFilter(None), F.text == 'Спросить у нейросети')
+async def cmd_ai(message: Message, state: FSMContext):
+    await message.answer(
+        text='Задайте вопрос:'
+    )
+    await state.set_state(GetAiMessage.send_message)
+
+
+@router.message(
+        GetAiMessage.send_message,
+        F.text != 'Спросить у нейросети'
+)
+async def get_ai_answer(message: Message, state: FSMContext):
+    # await state.update_data()
+
+    res = await generate_response(message.text)
+    print(res)
+    await message.answer(res.choices[0].message.content)
 
 
 @router.message(F.text.lower() == '⬅ назад в меню')
@@ -65,7 +99,6 @@ async def guide_answer(message: Message):
     )
 
 
-
 @router.message(F.text == 'Техника ловли')
 async def guid_answer(message: Message):
     await message.answer(
@@ -103,7 +136,7 @@ async def today_answer(message: Message):
         text='~~~~~~~~~~~~\n'
             f'<b>{data[day_now]['day']} {day_now}:</b>\n\n'
              '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now]['air_temp']}</b>\n'
+            f'Температура воздуха: <b>{data[day_now]['air_temp']}</b> 🌡️\n'
             f'Давление: <b>{data[day_now]['pressure']}</b>\n'
             f'Ветер: <b>{data[day_now]['wind']} 💨</b>\n'
             f'Фаза луны: <b>{data[day_now]['moon_phase']}</b> {moon_image[data[day_now]['moon_phase']]}\n\n'
@@ -125,7 +158,7 @@ async def tomorrow_answer(message: Message):
         text='~~~~~~~~~~~~\n'
             f'<b>{data[day_now]['day']} {day_now}:</b>\n\n'
              '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now]['air_temp']}</b>\n'
+            f'Температура воздуха: <b>{data[day_now]['air_temp']}</b> 🌡️\n'
             f'Давление: <b>{data[day_now]['pressure']}</b>\n'
             f'Ветер: <b>{data[day_now]['wind']} 💨</b>\n'
             f'Фаза луны: <b>{data[day_now]['moon_phase']}</b> {moon_image[data[day_now]['moon_phase']]}\n\n'
@@ -150,7 +183,7 @@ async def on_five_day_answer(message: Message):
             f'<b>{data[day_now[0]]['day']} {day_now[0]}:</b>\n\n'
 
              '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now[0]]['air_temp']}</b>\n'
+            f'Температура воздуха: <b>{data[day_now[0]]['air_temp']}</b> 🌡️\n'
             f'Давление: <b>{data[day_now[0]]['pressure']}</b>\n'
             f'Ветер: <b>{data[day_now[0]]['wind']}</b> 💨\n'
             f'Фаза луны: <b>{data[day_now[0]]['moon_phase']}</b> {moon_image[data[day_now[0]]['moon_phase']]}\n\n'
@@ -162,7 +195,7 @@ async def on_five_day_answer(message: Message):
             f'<b>{data[day_now[1]]['day']} {day_now[1]}:</b>\n\n'
 
              '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now[1]]['air_temp']}</b>\n'
+            f'Температура воздуха: <b>{data[day_now[1]]['air_temp']}</b> 🌡️\n'
             f'Давление: <b>{data[day_now[1]]['pressure']}</b>\n'
             f'Ветер: <b>{data[day_now[1]]['wind']}</b> 💨\n'
             f'Фаза луны: <b>{data[day_now[1]]['moon_phase']}</b> {moon_image[data[day_now[1]]['moon_phase']]}\n\n'
@@ -174,7 +207,7 @@ async def on_five_day_answer(message: Message):
             f'<b>{data[day_now[2]]['day']} {day_now[2]}:</b>\n\n'
 
              '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now[2]]['air_temp']}</b>\n'
+            f'Температура воздуха: <b>{data[day_now[2]]['air_temp']}</b> 🌡️\n'
             f'Давление: <b>{data[day_now[2]]['pressure']}</b>\n'
             f'Ветер: <b>{data[day_now[2]]['wind']}</b> 💨\n'
             f'Фаза луны: <b>{data[day_now[2]]['moon_phase']}</b> {moon_image[data[day_now[2]]['moon_phase']]}\n\n'
@@ -186,7 +219,7 @@ async def on_five_day_answer(message: Message):
             f'<b>{data[day_now[3]]['day']} {day_now[3]}:</b>\n\n'
 
              '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now[3]]['air_temp']}</b>\n'
+            f'Температура воздуха: <b>{data[day_now[3]]['air_temp']}</b> 🌡️\n'
             f'Давление: <b>{data[day_now[3]]['pressure']}</b>\n'
             f'Ветер: <b>{data[day_now[3]]['wind']}</b> 💨\n'
             f'Фаза луны: <b>{data[day_now[3]]['moon_phase']}</b> {moon_image[data[day_now[3]]['moon_phase']]}\n\n'
@@ -198,7 +231,7 @@ async def on_five_day_answer(message: Message):
             f'<b>{data[day_now[4]]['day']} {day_now[4]}:</b>\n\n'
 
              '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now[4]]['air_temp']}</b>\n'
+            f'Температура воздуха: <b>{data[day_now[4]]['air_temp']}</b> 🌡️\n'
             f'Давление: <b>{data[day_now[4]]['pressure']}</b>\n'
             f'Ветер: <b>{data[day_now[4]]['wind']}</b> 💨\n'
             f'Фаза луны: <b>{data[day_now[4]]['moon_phase']}</b> {moon_image[data[day_now[4]]['moon_phase']]}\n\n'
@@ -210,7 +243,7 @@ async def on_five_day_answer(message: Message):
             f'<b>{data[day_now[5]]['day']} {day_now[5]}:</b>\n\n'
 
              '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now[5]]['air_temp']}</b>\n'
+            f'Температура воздуха: <b>{data[day_now[5]]['air_temp']}</b> 🌡️\n'
             f'Давление: <b>{data[day_now[5]]['pressure']}</b>\n'
             f'Ветер: <b>{data[day_now[5]]['wind']}</b> 💨\n'
             f'Фаза луны: <b>{data[day_now[5]]['moon_phase']}</b> {moon_image[data[day_now[5]]['moon_phase']]}\n\n'
@@ -222,7 +255,7 @@ async def on_five_day_answer(message: Message):
             f'<b>{data[day_now[6]]['day']} {day_now[6]}:</b>\n\n'
 
              '<u><i>Влияющие факторы:</i></u>\n'
-            f'Температура воздуха: <b>{data[day_now[6]]['air_temp']}</b>\n'
+            f'Температура воздуха: <b>{data[day_now[6]]['air_temp']}</b> 🌡️\n'
             f'Давление: <b>{data[day_now[6]]['pressure']}</b>\n'
             f'Ветер: <b>{data[day_now[6]]['wind']}</b> 💨\n'
             f'Фаза луны: <b>{data[day_now[6]]['moon_phase']}</b> {moon_image[data[day_now[3]]['moon_phase']]}\n\n'
