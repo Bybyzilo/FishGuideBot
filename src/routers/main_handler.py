@@ -30,7 +30,7 @@ async def process_start_command(message: Message):
     )
 
 
-@router.message(StateFilter(None), F.text == 'Спросить у нейросети')
+@router.message(StateFilter(None), F.text == '🤔 Спросить у нейросети')
 async def cmd_ai(message: Message, state: FSMContext):
     await message.answer(
         text='Задайте вопрос:'
@@ -38,17 +38,14 @@ async def cmd_ai(message: Message, state: FSMContext):
     await state.set_state(GetAiMessage.send_message)
 
 
-@router.message(
-        GetAiMessage.send_message,
-        F.text != 'Спросить у нейросети',
-        F.text != '⬅ Назад в меню'
-)
+@router.message(GetAiMessage.send_message,
+                F.text != '⬅ Назад в меню')
 async def get_ai_answer(message: Message, state: FSMContext):
-
+    await message.answer(text='Ваш запрос в обработке...')
     res = await generate_response(message.text)
     await message.answer(
         text=res.choices[0].message.content,
-        reply_markup=reply_keyboards.ai_kb)
+        reply_markup=reply_keyboards.back_kb)
 
 
 @router.message(F.text.lower() == '⬅ назад в меню')
@@ -83,6 +80,20 @@ async def fish_info_answer(message: Message):
         reply_markup=inline_keyboards.back_in_menu_kb
     )
 
+
+@router.message(F.text == '🎣 Сообщество рыбаков')
+async def fishing_community(message: Message):
+    await message.answer(
+        text='В нашем сообществе вы найдете:\n\n'
+             '<i> -Обсуждения последних рыболовных новостей и тенденций</i>\n'
+             '<i> -Рекомендации по выбору снаряжения и тактики ловли</i>\n'
+             '<i> -Фотографии и видео уникальных уловов</i>\n'
+             '<i> -Обмен опытом и советами между опытными рыбаками</i>\n'
+             '<i> -Организация групповых рыболовных туров и соревнований</i>\n'
+             'Вступай по ссылке: https://t.me/+JNU5Mf9-36wxMDY6',
+        reply_markup=reply_keyboards.back_kb,
+        parse_mode='html'
+    )
 
 @router.message(F.text == '🎣 Советы по рыбалке')
 async def guide_answer(message: Message):
@@ -137,6 +148,7 @@ async def tomorrow_answer(message: Message):
             f"Давление: <b>{data[day_now]['pressure']}</b>\n"
             f"Ветер: <b>{data[day_now]['wind']} 💨</b>\n"
             f"Фаза луны: <b>{data[day_now]['moon_phase']}</b> {moon_image[data[day_now]['moon_phase']]}\n\n"
+            
             f"{data[day_now]['discription']}\n"
             f'~~~~~~~~~~~~',
             parse_mode='html'
@@ -162,10 +174,8 @@ async def on_five_day_answer(message: Message):
             f"Ветер: <b>{data[day_now[i]]['wind']} 💨</b>\n"
             f"Фаза луны: <b>{data[day_now[i]]['moon_phase']}</b> {moon_image[data[day_now[i]]['moon_phase']]}\n\n"
             
-            f'<i>{data[day_now[i]]["discription"]}</i>\n\n'
-           '———————\n\n'
-        )
-    
+             f'<i>{data[day_now[i]]["discripti</i>on"]}</i>\n\n'
+            '——<i>—————\n\n</i>'
+    )
     await message.answer(text, parse_mode='html')
-        
-        
+                

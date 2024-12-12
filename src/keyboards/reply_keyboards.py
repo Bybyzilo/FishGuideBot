@@ -7,10 +7,11 @@ main_kb = ReplyKeyboardMarkup(
         [
             KeyboardButton(text='🌅 Прогноз клёва'),
             KeyboardButton(text='🏝️ Места ловли'),
-            KeyboardButton(text='🎣 Советы по рыбалке')
+            # KeyboardButton(text='🎣 Советы по рыбалке')
         ],
         [
-            KeyboardButton(text='Спросить у нейросети')
+            KeyboardButton(text='🤔 Спросить у нейросети'),
+            KeyboardButton(text='🎣 Сообщество рыбаков')
         ]
     ],
     resize_keyboard=True,
@@ -54,7 +55,7 @@ forecast_kb = ReplyKeyboardMarkup(
 )
 
 
-ai_kb = ReplyKeyboardMarkup(
+back_kb = ReplyKeyboardMarkup(
     keyboard=[
         [
             KeyboardButton(text='⬅ Назад в меню')
