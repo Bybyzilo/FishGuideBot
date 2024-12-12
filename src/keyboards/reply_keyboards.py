@@ -52,3 +52,13 @@ forecast_kb = ReplyKeyboardMarkup(
     one_time_keyboard=True,
     input_field_placeholder='Выберите действие..'
 )
+
+
+ai_kb = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text='⬅ Назад в меню')
+        ]
+    ],
+    resize_keyboard=True
+)

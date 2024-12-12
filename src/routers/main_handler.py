@@ -19,14 +19,6 @@ class GetAiMessage(StatesGroup):
     send_message = State()
 
 
-# @router.message(F.text == 'Спросить у нейросети')
-# async def ai(message: Message, state: FSMContext):
-
-#     res = await generate_response(message.text)
-#     print(res)
-#     await message.answer(res.choices[0].message.content)
-
-
 @router.message(CommandStart())
 async def process_start_command(message: Message):
     await message.answer(
@@ -48,14 +40,15 @@ async def cmd_ai(message: Message, state: FSMContext):
 
 @router.message(
         GetAiMessage.send_message,
-        F.text != 'Спросить у нейросети'
+        F.text != 'Спросить у нейросети',
+        F.text != '⬅ Назад в меню'
 )
 async def get_ai_answer(message: Message, state: FSMContext):
-    # await state.update_data()
 
     res = await generate_response(message.text)
-    print(res)
-    await message.answer(res.choices[0].message.content)
+    await message.answer(
+        text=res.choices[0].message.content,
+        reply_markup=reply_keyboards.ai_kb)
 
 
 @router.message(F.text.lower() == '⬅ назад в меню')
@@ -168,7 +161,6 @@ async def on_five_day_answer(message: Message):
             f"Давление: <b>{data[day_now[i]]['pressure']}</b>\n"
             f"Ветер: <b>{data[day_now[i]]['wind']} 💨</b>\n"
             f"Фаза луны: <b>{data[day_now[i]]['moon_phase']}</b> {moon_image[data[day_now[i]]['moon_phase']]}\n\n"
-            f"{data[day_now[i]]['discription']}\n\n"
             
             f'<i>{data[day_now[i]]["discription"]}</i>\n\n'
            '———————\n\n'
