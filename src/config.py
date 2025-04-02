@@ -1,5 +1,5 @@
-TG_TOKEN = '7515516995:AAGEnD6LhakerLS0TjrMa3oFeU4K4lamgKs'
-AI_TOKEN = 'AAFq57RomvjSLD553dqOUg54rNpaHkzl'
+TG_TOKEN = ''
+AI_TOKEN = ''
 
 
 moon_image = {
